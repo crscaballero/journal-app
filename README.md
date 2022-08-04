@@ -1,4 +1,4 @@
-# journall-app
+# journal-app
 
 ## Project setup
 ```
