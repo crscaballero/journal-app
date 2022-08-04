@@ -21,10 +21,13 @@
                 v-model="entry.text"
                 cols="30"
                 rows="10"
-                placeholder="Whaat happened today?..."
+                placeholder="What happened today?..."
             ></textarea>
         </div>
-        <Fab icon="fa-save" />
+        <Fab
+            icon="fa-save"
+            @on:click="saveEntry"
+        />
         <img
             v-if="entry?.picture"
             :src="entry.picture"
@@ -36,7 +39,7 @@
 
 <script>
 import { defineAsyncComponent } from "vue";
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex';
 
 import getDayMonthYear from '@/modules/daybook/helpers/getDayMonthYear';
 
@@ -71,10 +74,26 @@ export default {
         }
     },
     methods: {
+        ...mapActions('journal', ['updateEntry']),
         loadEntry(){
-            const entry = this.getEntryById(this.id);
-            if (!entry) return this.$router.push({name: 'no-entry'})
+            let entry;
+            if (this.id === 'new') {
+                entry = {
+                    text: '',
+                    date: new Date().getTime()
+                }
+            } else {
+                entry = this.getEntryById(this.id);
+                if (!entry) return this.$router.push({name: 'no-entry'})
+            }
             this.entry = entry;
+        },
+        async saveEntry(){
+            if (this.entry.id) { // If ID does exist then update
+                this.updateEntry(this.entry);
+            } else { // If not, create
+
+            }
         }
     },
     created() {
