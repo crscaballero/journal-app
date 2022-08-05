@@ -9,6 +9,14 @@ export const updateEntry = (state, entry) => {
     state.entries[idx] = entry;
 }
 
-export const addEntry = (/*state*/) => {
+export const addEntry = (state, entry) => {
+    // console.log('addEntry:entry:', entry);
+    state.entries.unshift(entry);
+}
 
+export const deleteEntry = (state, id) => {
+    // console.log('deleteEntry:id:', id);
+    const index = state.entries.findIndex(entry => entry.id === id);
+    // console.log('index:', index);
+    state.entries.splice(index, 1);
 }

@@ -7,10 +7,19 @@
                 <span class="textmx-2 fs-4 fw-light">{{yearDay}}</span>
             </div>
             <div>
-                <button type="button" class="btn btn-danger mx-2">
+                <button
+                    v-if="entry.id"
+                    @click="onDeleteEntry"
+                    type="button"
+                    class="btn btn-danger mx-2"
+                >
                     Delete <i class="fa fa-trash-all"></i>
                 </button>
-                <button type="button" class="btn btn-primary">
+                <button
+                    v-if="entry.id"
+                    type="button"
+                    class="btn btn-primary"
+                >
                     Upload image <i class="fa fa-upload"></i>
                 </button>
             </div>
@@ -40,6 +49,7 @@
 <script>
 import { defineAsyncComponent } from "vue";
 import { mapGetters, mapActions } from 'vuex';
+import Swal from 'sweetalert2';
 
 import getDayMonthYear from '@/modules/daybook/helpers/getDayMonthYear';
 
@@ -74,7 +84,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions('journal', ['updateEntry']),
+        ...mapActions('journal', ['updateEntry', 'createEntry', 'deleteEntry']),
         loadEntry(){
             let entry;
             if (this.id === 'new') {
@@ -89,10 +99,38 @@ export default {
             this.entry = entry;
         },
         async saveEntry(){
-            if (this.entry.id) { // If ID does exist then update
-                this.updateEntry(this.entry);
-            } else { // If not, create
-
+            if (!this.entry.text) {
+                alert('You must write somthing before save it');
+                return;
+            }
+            new Swal({
+                title: 'Please wait...',
+                allowOutsideClick: false
+            });
+            Swal.showLoading();
+            if (this.entry.id) { // If Id does exist then update it
+                await this.updateEntry(this.entry);
+            } else { // If not, create it
+                const newEntryId = await this.createEntry(this.entry);
+                this.$router.push({ name: 'entry', params: { id: newEntryId }})
+            }
+            Swal.fire('Saved!', 'Entry saved successfully', 'success');
+        },
+        async onDeleteEntry() {
+            const { isConfirmed } = await Swal.fire({
+                title: 'Are you sure?',
+                text: 'Once delted can not be retrieved',
+                showDenyButton: true,
+                confirmButtonText: 'Yes, I am sure'
+            });
+            if (isConfirmed) {
+                new Swal({
+                    title: 'Please wait...',
+                    allowOutsideClick: false
+                });
+                await this.deleteEntry(this.entry.id);
+                Swal.fire('Deleted!', 'Entry deleted successfully', 'success');
+                this.$router.push({ name: 'no-entry' });
             }
         }
     },
