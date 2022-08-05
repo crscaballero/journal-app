@@ -143,7 +143,7 @@ export default {
         async onDeleteEntry() {
             const { isConfirmed } = await Swal.fire({
                 title: 'Are you sure?',
-                text: 'Once delted can not be retrieved',
+                text: 'Once deleted can not be retrieved',
                 showDenyButton: true,
                 confirmButtonText: 'Yes, I am sure'
             });
