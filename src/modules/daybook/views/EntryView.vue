@@ -15,10 +15,18 @@
                 >
                     Delete <i class="fa fa-trash-all"></i>
                 </button>
+                <input
+                    type="file"
+                    @change="onSelectedImage"
+                    ref="imageSelector"
+                    accept="image/png, image/jpeg"
+                    v-show="false"
+                />
                 <button
                     v-if="entry.id"
                     type="button"
                     class="btn btn-primary"
+                    @click="onSelectImage"
                 >
                     Upload image <i class="fa fa-upload"></i>
                 </button>
@@ -38,8 +46,14 @@
             @on:click="saveEntry"
         />
         <img
-            v-if="entry?.picture"
+            v-if="entry?.picture && !localImage"
             :src="entry.picture"
+            alt="entry-picture"
+            class="img-thumbnail"
+        />
+        <img
+            v-if="localImage"
+            :src="localImage"
             alt="entry-picture"
             class="img-thumbnail"
         />
@@ -52,6 +66,7 @@ import { mapGetters, mapActions } from 'vuex';
 import Swal from 'sweetalert2';
 
 import getDayMonthYear from '@/modules/daybook/helpers/getDayMonthYear';
+import uploadImage from '@/modules/daybook/helpers/uploadImage';
 
 export default {
     props: {
@@ -65,7 +80,9 @@ export default {
     },
     data() {
         return {
-            entry: null
+            entry: null,
+            localImage: null,
+            file: null
         }
     },
     computed: {
@@ -108,12 +125,19 @@ export default {
                 allowOutsideClick: false
             });
             Swal.showLoading();
+            const pictureUrl  = await uploadImage(this.file);
+            if (pictureUrl) {
+                this.entry.picture = pictureUrl;
+                this.localImage = pictureUrl;
+            }
             if (this.entry.id) { // If Id does exist then update it
                 await this.updateEntry(this.entry);
             } else { // If not, create it
                 const newEntryId = await this.createEntry(this.entry);
                 this.$router.push({ name: 'entry', params: { id: newEntryId }})
             }
+            this.file = null;
+            this.localImage = null;
             Swal.fire('Saved!', 'Entry saved successfully', 'success');
         },
         async onDeleteEntry() {
@@ -132,6 +156,22 @@ export default {
                 Swal.fire('Deleted!', 'Entry deleted successfully', 'success');
                 this.$router.push({ name: 'no-entry' });
             }
+        },
+        onSelectedImage(event) {
+            // console.log('onSelectedImage:event:', event.target.files[0]);
+            const file = event.target.files[0];
+            if (!file) {
+                this.localImage = null;
+                this.file = null;
+                return;
+            }
+            this.file = file;
+            const fileReader = new FileReader();
+            fileReader.onload = () => this.localImage = fileReader.result;
+            fileReader.readAsDataURL(file);
+        },
+        onSelectImage() {
+            this.$refs.imageSelector.click();
         }
     },
     created() {
