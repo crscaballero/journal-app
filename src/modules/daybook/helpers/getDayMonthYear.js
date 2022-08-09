@@ -1,5 +1,5 @@
 const months = ['January', 'February', 'March', 'April', 'May', 'June','July', 'August', 'September', 'October', 'November', 'December'];
-const days   = ['Sunday','Monday','Tuesday','Weednesday','Thurdsay','Friday','Saturday'];
+const days   = ['Sunday','Monday','Tuesday','Weednesday','Thursday','Friday','Saturday'];
 
 const getDayMonthYear = (dateString) => {
     const date = new Date(dateString);

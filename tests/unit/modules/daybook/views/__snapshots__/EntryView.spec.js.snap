@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EntryView.vue It must redirect the user because the id doesn't exist 1`] = `<!--v-if-->`;
+
+exports[`EntryView.vue Must show the entry correctly 1`] = `
+<div class="entry-title d-flex justify-content-between p-2">
+  <div><span class="text-success fs-3 fw-bold">4</span><span class="mx-1 fs-3">August</span><span class="textmx-2 fs-4 fw-light">2022, Thursday</span></div>
+  <div><button type="button" class="btn btn-danger mx-2"> Delete <i class="fa fa-trash-all"></i></button><input type="file" accept="image/png, image/jpeg" style="display: none;"><button type="button" class="btn btn-primary"> Upload image <i class="fa fa-upload"></i></button></div>
+</div>
+<hr>
+<div class="d-flex flex-column px-3 h-75"><textarea cols="30" rows="10" placeholder="What happened today?..."></textarea></div>
+<fab-stub icon="fa-save"></fab-stub>
+<img src="https://res.cloudinary.com/crscaballero/image/upload/v1659671690/journal_vue/sgfoa5nr6kyobpppahlp.jpg" alt="entry-picture" class="img-thumbnail">
+<!--v-if-->
+`;

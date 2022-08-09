@@ -69,6 +69,7 @@ import getDayMonthYear from '@/modules/daybook/helpers/getDayMonthYear';
 import uploadImage from '@/modules/daybook/helpers/uploadImage';
 
 export default {
+    name: 'EntryView',
     props: {
         id: {
             type: String,
@@ -117,10 +118,10 @@ export default {
         },
         async saveEntry(){
             if (!this.entry.text) {
-                alert('You must write somthing before save it');
+                alert('You must write something before save it');
                 return;
             }
-            new Swal({
+            Swal.fire({
                 title: 'Please wait...',
                 allowOutsideClick: false
             });
@@ -148,7 +149,7 @@ export default {
                 confirmButtonText: 'Yes, I am sure'
             });
             if (isConfirmed) {
-                new Swal({
+                Swal.fire({
                     title: 'Please wait...',
                     allowOutsideClick: false
                 });
